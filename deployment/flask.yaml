@@ -28,7 +28,7 @@ spec:  # Spécification du Deployment
     spec:  # Spécification des pods créés à partir de ce modèle
       containers:  # Conteneurs à exécuter dans les pods
         - name: flask-container  # Nom du conteneur
-          image: appereg/projet-flask-v0.1:0883d9741c97dae8a2918d00e2d62790d0753d48
+          image: appereg/projet-flask-v0.1:fdac477e71d226301a90ba0093bdd2f80c763b9c
           resources:  # Ressources allouées au conteneur
             requests:  # Demandes minimales de ressources
               memory: 128Mi  # Demande de 128 Méga-octets de mémoire
