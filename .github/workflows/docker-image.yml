@@ -23,6 +23,20 @@ jobs:  # Définition des jobs à exécuter lors de l'événement déclencheur
       - name: Push the Docker image  # Nom de l'étape pour pousser l'image Docker vers le registre
         run: docker push ${{ secrets.DOCKER_USERNAME }}/projet-flask-v0.1:${{ github.sha }}  # Commande pour pousser l'image Docker vers le registre en utilisant les secrets du référentiel
 
+      - name: Checkout code for the update
+        uses: actions/checkout@v4
+        with:
+          ref: main
+  
+      - name: Update Deployment Image Tag  # Nom de l'étape dans le workflow GitHub Actions
+        run: |  # Début de l'exécution d'un script shell
+          sed -i "s|${{ secrets.DOCKER_USERNAME }}/projet-flask-v0.1:.*|${{ secrets.DOCKER_USERNAME }}/projet-flask-v0.1:${{ github.sha }}|g" ./deployment/flask.yaml
+          git config --global user.email "action@github.com"
+          git config --global user.name "GitHub Action"
+          git add .
+          git commit -am "Update image tag to ${{ github.sha }}" || echo "No changes to commit"
+          git push origin main
+
   on-failure:  # Job à exécuter en cas d'échec du workflow
     runs-on: ubuntu-latest  # Utilisation de l'image Ubuntu la plus récente pour exécuter le job
     if: ${{ github.event.workflow_run.conclusion == 'failure' }}  # Condition pour exécuter le job uniquement en cas d'échec du workflow
